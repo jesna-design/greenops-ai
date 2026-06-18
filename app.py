@@ -39,12 +39,9 @@ def home() -> str:
 @app.route('/calculate', methods=['POST'])
 def calculate() -> Any:
     """API ENDPOINT: Processes infrastructure metrics and returns optimization data."""
-    # SECURITY HARMONIZATION: Payload verification
-    if not request.is_json:
-        return jsonify({"error": "Unsupported Media Type. Request must be JSON."}), 415
-
     try:
-        data: Dict[str, Any] = request.get_json() or {}
+        # Removed the strict request.is_json check to allow the frontend to breathe
+        data: Dict[str, Any] = request.get_json(force=True, silent=True) or {}
         
         # Parse & Sanitize Input
         name: str = sanitize_string(str(data.get('name', 'Eco Engineer')))
@@ -113,7 +110,8 @@ def apply_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Content-Security-Policy'] = "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
+    # Relaxed CSP to allow your frontend JavaScript and Styles to load properly
+    response.headers['Content-Security-Policy'] = "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline';"
     return response
 
 # --- CODE QUALITY: TRACEBACK LEAK PREVENTIONS ---
