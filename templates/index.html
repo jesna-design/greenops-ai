@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GreenOps AI | Neural Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             /* DEEP NEURAL DARK THEME */
@@ -152,41 +152,41 @@
     </header>
 
     <div class="grid">
-        <div class="panel">
+        <main class="panel">
             <h2 class="panel-header">Parameter Inputs</h2>
             <form id="metricsForm" onsubmit="event.preventDefault();">
                 <div class="input-group">
-                    <label>System User ID</label>
+                    <label for="userName">System User ID</label>
                     <span class="helper-text">Who is initiating this tracking sequence?</span>
                     <input type="text" id="userName" value="Developer_01" autocomplete="off">
                 </div>
                 <div class="input-group">
-                    <label>Daily AI Model Prompts</label>
+                    <label for="prompts">Daily AI Model Prompts</label>
                     <span class="helper-text">Total queries sent to AI assistants daily.</span>
                     <input type="number" id="prompts" value="45" min="0">
                 </div>
                 <div class="input-group">
-                    <label>Active Compute Environment</label>
+                    <label for="hours">Active Compute Environment</label>
                     <span class="helper-text">Hours per day your cloud instances remain online.</span>
                     <input type="number" id="hours" value="12" min="0" max="24">
                 </div>
                 <div class="input-group">
-                    <label>Cloud Datasets (GB)</label>
+                    <label for="storage">Cloud Datasets (GB)</label>
                     <span class="helper-text">Total gigabytes stored in remote servers.</span>
                     <input type="number" id="storage" value="650" min="0">
                 </div>
                 <div class="slider-wrapper">
                     <div class="slider-header">
-                        <label>Green Optimization Target</label>
+                        <label for="optimization">Green Optimization Target</label>
                         <span id="optVal">0%</span>
                     </div>
                     <span class="helper-text">Adjust this slider to simulate energy efficiency routing.</span>
                     <input type="range" id="optimization" min="0" max="75" value="0" step="5">
                 </div>
             </form>
-        </div>
+        </main>
 
-        <div class="panel" id="dashboardOutput">
+        <section class="panel" id="dashboardOutput" aria-live="polite">
             <h2 class="panel-header">Live Telemetry Output</h2>
             
             <div class="metrics-grid">
@@ -204,26 +204,35 @@
 
             <div class="feedback-box box-context">
                 <div class="ai-avatar">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff" aria-hidden="true">
+                        <title>Information Icon</title>
+                        <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                    </svg>
                 </div>
                 <div><b>Contextual Analysis:</b> The energy required for this digital workload matches the power needed to drive a standard electric vehicle for <b id="evKm" style="color: var(--accent-cyan);">0</b> kilometers.</div>
             </div>
 
             <div class="feedback-box box-success" id="savingsBox">
                 <div class="ai-avatar" style="background: var(--accent-purple);">
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff" aria-hidden="true">
+                        <title>Success Checkmark</title>
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
                 </div>
                 <div><b>Optimization Deployed:</b> By adjusting your system targets, you successfully prevented <b id="savedCo2" style="color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px;">0</b> kg of CO₂ from entering the atmosphere.</div>
             </div>
 
             <div class="ai-module">
                 <div class="ai-header">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <title>System Recommendations</title>
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                    </svg>
                     System Recommendations
                 </div>
                 <div id="insightsBox">Processing telemetry...</div>
             </div>
-        </div>
+        </section>
     </div>
 </div>
 
@@ -232,6 +241,7 @@
         let timeout;
         return function executedFunction(...args) {
             const later = () => { clearTimeout(timeout); func(...args); };
+            const callNow = !timeout;
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
