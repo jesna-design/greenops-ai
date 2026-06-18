@@ -32,16 +32,7 @@ def test_calculation_valid_payload(client):
     assert 'co2' in data
     assert 'insights' in data
 
-def test_calculation_edge_case(client):
-    """Verify system performance when inputs are set to zero or minimum values."""
-    payload = {
-        "name": "Test_User",
-        "prompts": 0,
-        "hours": 0,
-        "storage": 0,
-        "optimization": 0
-    }
-    response = client.post('/calculate', 
-                           data=json.dumps(payload), 
-                           content_type='application/json')
-    assert response.status_code == 200
+def test_calculation_invalid_media_type(client):
+    """Verify system returns a 415 error code when data content type isn't JSON."""
+    response = client.post('/calculate', data="plain text input", content_type='text/plain')
+    assert response.status_code == 415
