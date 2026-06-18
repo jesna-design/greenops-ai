@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from typing import Dict, Any, List
+import os
 import re
 
 app = Flask(__name__, template_folder='templates')
@@ -76,8 +77,19 @@ def calculate() -> Any:
         })
         
     except (ValueError, TypeError) as e:
-        # Graceful error handling prevents server crashes from bad user data
         return jsonify({"error": "Invalid data format received."}), 400
 
+# ==========================================
+# 🛡️ NEW ADDITION: OWASP SECURITY HEADERS
+# ==========================================
+@app.after_request
+def apply_security_headers(response):
+    """Enforces explicit application security headers across all app responses."""
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    return response
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Production fallback optimization
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
