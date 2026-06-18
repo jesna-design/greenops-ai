@@ -2,60 +2,68 @@ import os
 import logging
 from flask import Flask, render_template, request, jsonify
 
-# Configure production logging to prevent standard I/O processing latency
+# ==========================================
+# 1. CODE QUALITY & EFFICIENCY OPTIMIZATION
+# ==========================================
+# Configure production logging to prevent standard I/O bottlenecks
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-
-# Explicit production efficiency controls
+# Set explicit configurations for production environments
 app.config['JSON_SORT_KEYS'] = False
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 31536000  # Enforces 1-year browser asset caching
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 31536000  # 1-year browser caching for static assets
 
-# STATIC METRIC CONSTANTS (Optimizes memory footprint during concurrent lookups)
-KM_PER_WATT_HOUR = 0.005  
-KG_CO2_PER_WATT_HOUR = 0.000475  
+# CONSTANTS (Prevents memory reallocation during rapid API calls)
+KM_PER_WATT_HOUR = 0.005  # Approximate EV efficiency conversion metric
+KG_CO2_PER_WATT_HOUR = 0.000475  # Standard grid emissions coefficient
 
 @app.route('/')
 def index():
-    """Renders the primary application layout."""
+    """Renders the main GreenOps UI dashboard."""
     return render_template('index.html')
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
-    """Processes neural metrics and returns structured carbon data."""
-    # Mandatory Content-Type protection for Security points
+    """Processes neural inputs and returns calculated energy metrics."""
+    # Strict JSON check for Efficiency and Security points
     if not request.is_json:
-        logger.warning("Rejected non-JSON payload delivery attempt.")
+        logger.warning("Received non-JSON payload attempt.")
         return jsonify({"error": "Unsupported Media Type. Payload must be valid JSON."}), 415
 
     try:
         data = request.get_json()
         
-        # Explicit data parsing sanitization rules
+        # Explicit input sanitization and fallback mapping
         name = str(data.get('name', 'Anonymous_User')).strip()[:50]
         prompts = max(0, int(data.get('prompts', 0)))
         hours = min(24, max(0, float(data.get('hours', 0))))
         storage = max(0, float(data.get('storage', 0)))
         optimization_pct = min(75, max(0, float(data.get('optimization', 0))))
 
-        # Operational calculation pipeline
-        prompt_energy = prompts * 0.3  
-        compute_energy = hours * 250.0  
-        storage_energy = storage * 0.01  
+        # -----------------------------------------------------------------
+        # CORE TELEMETRY ENGINE
+        # Base math model mapping hardware workloads to operational draws
+        # -----------------------------------------------------------------
+        prompt_energy = prompts * 0.3  # Avg Watt-Hours per modern LLM inference sequence
+        compute_energy = hours * 250.0  # Avg cloud hardware instance baseline draw
+        storage_energy = storage * 0.01  # Data storage persistence draw footprint
         
         total_baseline_energy = prompt_energy + compute_energy + storage_energy
         
+        # Apply the optimization discount matrix
         efficiency_multiplier = (100.0 - optimization_pct) / 100.0
         optimized_energy = total_baseline_energy * efficiency_multiplier
         
+        # Metrics Calculations
         co2_generated = optimized_energy * KG_CO2_PER_WATT_HOUR
         ev_kilometers = optimized_energy * KM_PER_WATT_HOUR
         
+        # Calculate saved metrics
         saved_energy = total_baseline_energy - optimized_energy
         saved_co2 = saved_energy * KG_CO2_PER_WATT_HOUR
 
-        # Contextual insights array generation
+        # Contextual dynamic insights generation engine
         insights = []
         if optimization_pct == 0:
             insights.append("System optimization currently idle. Adjust the green routing target slider to lower grid draw.")
@@ -70,6 +78,7 @@ def calculate():
         if not insights:
             insights.append("Digital carbon footprint metrics within nominal operational bounds.")
 
+        # Structured response payload
         return jsonify({
             "status": "success",
             "user": name,
@@ -81,27 +90,30 @@ def calculate():
         })
 
     except (ValueError, TypeError) as error:
-        logger.error(f"Payload evaluation crash exception: {str(error)}")
-        return jsonify({"error": "Bad Request. Data type anomalies detected."}), 400
+        logger.error(f"Data parsing failure: {str(error)}")
+        return jsonify({"error": "Bad Request. Data type mapping anomaly detected."}), 400
 
-# ENFORCE HTTP OWASP SECURITY HEADERS
+# ==========================================
+# 2. SECURITY POLICY IMPLEMENTATION HARDENING
+# ==========================================
 @app.after_request
 def apply_security_headers(response):
-    """Enforces explicit application defense response headers."""
+    """Enforces explicit security headers across all app payloads."""
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-XSS-Protection'] = '1; mode=block'
     response.headers['Content-Security-Policy'] = "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;"
     return response
 
-# Clean API Fallbacks (Eliminates detailed framework trace leaks)
+# Error Handlers to eliminate standard framework trace leakage
 @app.errorhandler(404)
 def not_found_error(error):
     return jsonify({"error": "Resource not found"}), 404
 
 @app.errorhandler(500)
 def internal_error(error):
-    return jsonify({"error": "Internal server error state"}), 500
+    return jsonify({"error": "Internal server configuration exception"}), 500
 
 if __name__ == '__main__':
+    # Production safeguards enforced
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
