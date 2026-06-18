@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenOps AI | Neural Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* DEEP NEURAL DARK THEME */
+            --bg-deep: #020617; 
+            --panel-bg: rgba(15, 23, 42, 0.7); 
+            --card-bg: rgba(30, 41, 59, 0.6); 
+            
+            /* NEON AI ACCENTS */
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            
+            /* TEXT COLORS */
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8; 
+            
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow-neon: 0 0 20px rgba(168, 85, 247, 0.15);
+            --radius: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            /* AI-inspired dark gradient background */
+            background: radial-gradient(circle at top left, #1e1b4b 0%, var(--bg-deep) 40%, var(--bg-deep) 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            margin: 0; 
+            padding: 40px 20px;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        /* Subtle grid background pattern */
+        body::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px; z-index: -1;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* Welcome Banner */
+        .hero {
+            background: linear-gradient(90deg, rgba(15,23,42,0.9) 0%, rgba(88,28,135,0.4) 100%);
+            color: white;
+            border-radius: var(--radius);
+            padding: 40px 50px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-neon);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 { margin: 0; font-size: 2.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .hero p { margin: 10px 0 0 0; color: #cbd5e1; font-size: 1.1rem; max-width: 700px; }
+
+        /* Layout Grid */
+        .grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 30px; }
+
+        /* DARK NEURAL PANELS */
+        .panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius); 
+            padding: 35px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); 
+            transition: var(--transition);
+            position: relative;
+        }
+        /* Top glowing accent line */
+        .panel::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            border-top-left-radius: var(--radius); border-top-right-radius: var(--radius);
+        }
+
+        .panel-header { font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-top: 0; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+
+        /* Prompt Input Controls */
+        .input-group { margin-bottom: 24px; }
+        .input-group label { display: block; font-size: 1rem; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+        .input-group .helper-text { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; display: block; }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%; padding: 14px 18px; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 1rem; 
+            color: var(--accent-cyan); background: rgba(0, 0, 0, 0.4); transition: var(--transition);
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none; border-color: var(--accent-purple); background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2);
+        }
+
+        /* Action Slider - Neural Weight adjustment */
+        .slider-wrapper { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-top: 30px; }
+        .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-weight: 600; font-size: 1.1rem; }
+        .slider-header span { color: #fff; font-size: 1.2rem; font-weight: 700; background: rgba(168, 85, 247, 0.3); padding: 4px 12px; border-radius: 6px; border: 1px solid var(--accent-purple); }
+        
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); outline: none; margin-top: 15px; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+            background: var(--accent-cyan); cursor: pointer; transition: 0.2s;
+            box-shadow: 0 0 15px var(--accent-cyan);
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); }
+
+        /* Inner Metric Cards */
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .metric-card {
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(6, 182, 212, 0.2);
+            padding: 25px; border-radius: 16px; text-align: center;
+        }
+        .metric-title { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .metric-value { font-size: 2.8rem; font-weight: 700; color: #fff; margin: 5px 0 0 0; line-height: 1; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .metric-unit { font-size: 0.9rem; color: var(--accent-cyan); font-weight: 600; margin-top: 5px; }
+
+        /* Generative AI Feedback Boxes */
+        .feedback-box { padding: 20px; border-radius: 12px; margin-bottom: 20px; font-size: 0.95rem; display: flex; gap: 15px; align-items: flex-start; border: 1px solid transparent; }
+        .box-context { background: rgba(6, 182, 212, 0.1); border-color: rgba(6, 182, 212, 0.3); }
+        .box-success { background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3); display: none; }
+        .ai-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
+
+        /* AI Advice Block */
+        .ai-module { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; padding: 25px; margin-top: 25px; }
+        .ai-header { font-weight: 600; color: #fff; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; font-size: 1.1rem; }
+        .ai-header svg { width: 24px; height: 24px; fill: var(--accent-purple); }
+        .ai-module ul { margin: 0; padding-left: 20px; color: #e2e8f0; }
+        .ai-module li { margin-bottom: 12px; }
+
+        .updating { opacity: 0.5; filter: blur(2px); transition: 0.2s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="hero">
+        <h1>GreenOps AI</h1>
+        <p>Your interactive dashboard bridging daily digital habits with real-world energy impact.</p>
+    </header>
+
+    <div class="grid">
+        <div class="panel">
+            <h2 class="panel-header">Parameter Inputs</h2>
+            <form id="metricsForm" onsubmit="event.preventDefault();">
+                <div class="input-group">
+                    <label>System User ID</label>
+                    <span class="helper-text">Who is initiating this tracking sequence?</span>
+                    <input type="text" id="userName" value="Developer_01" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label>Daily AI Model Prompts</label>
+                    <span class="helper-text">Total queries sent to AI assistants daily.</span>
+                    <input type="number" id="prompts" value="45" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Active Compute Environment</label>
+                    <span class="helper-text">Hours per day your cloud instances remain online.</span>
+                    <input type="number" id="hours" value="12" min="0" max="24">
+                </div>
+                <div class="input-group">
+                    <label>Cloud Datasets (GB)</label>
+                    <span class="helper-text">Total gigabytes stored in remote servers.</span>
+                    <input type="number" id="storage" value="650" min="0">
+                </div>
+                <div class="slider-wrapper">
+                    <div class="slider-header">
+                        <label>Green Optimization Target</label>
+                        <span id="optVal">0%</span>
+                    </div>
+                    <span class="helper-text">Adjust this slider to simulate energy efficiency routing.</span>
+                    <input type="range" id="optimization" min="0" max="75" value="0" step="5">
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="dashboardOutput">
+            <h2 class="panel-header">Live Telemetry Output</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Energy Drain</div>
+                    <div class="metric-value" id="energyOut">0</div>
+                    <div class="metric-unit">Watt-Hours</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Carbon Generated</div>
+                    <div class="metric-value" id="co2Out">0</div>
+                    <div class="metric-unit">kg CO₂</div>
+                </div>
+            </div>
+
+            <div class="feedback-box box-context">
+                <div class="ai-avatar">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                </div>
+                <div><b>Contextual Analysis:</b> The energy required for this digital workload matches the power needed to drive a standard electric vehicle for <b id="evKm" style="color: var(--accent-cyan);">0</b> kilometers.</div>
+            </div>
+
+            <div class="feedback-box box-success" id="savingsBox">
+                <div class="ai-avatar" style="background: var(--accent-purple);">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+                <div><b>Optimization Deployed:</b> By adjusting your system targets, you successfully prevented <b id="savedCo2" style="color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px;">0</b> kg of CO₂ from entering the atmosphere.</div>
+            </div>
+
+            <div class="ai-module">
+                <div class="ai-header">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                    System Recommendations
+                </div>
+                <div id="insightsBox">Processing telemetry...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => { clearTimeout(timeout); func(...args); };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    const fetchAnalytics = async () => {
+        document.getElementById('dashboardOutput').classList.add('updating');
+
+        const payload = {
+            name: document.getElementById('userName').value,
+            prompts: document.getElementById('prompts').value,
+            hours: document.getElementById('hours').value,
+            storage: document.getElementById('storage').value,
+            optimization: document.getElementById('optimization').value
+        };
+
+        document.getElementById('optVal').innerText = payload.optimization + '%';
+
+        try {
+            const res = await fetch('/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            setTimeout(() => {
+                document.getElementById('energyOut').innerText = Math.round(data.energy);
+                document.getElementById('co2Out').innerText = data.co2.toFixed(2);
+                document.getElementById('evKm').innerText = data.ev_km.toFixed(1);
+
+                const sBox = document.getElementById('savingsBox');
+                if (payload.optimization > 0) {
+                    document.getElementById('savedCo2').innerText = data.saved_co2.toFixed(2);
+                    sBox.style.display = "flex";
+                } else {
+                    sBox.style.display = "none";
+                }
+
+                document.getElementById('insightsBox').innerHTML = `<ul style="margin:0; padding-left:20px;">${data.insights.map(i => `<li style="margin-bottom:10px;">${i}</li>`).join('')}</ul>`;
+                document.getElementById('dashboardOutput').classList.remove('updating');
+            }, 300);
+
+        } catch (error) {
+            console.error("API Error:", error);
+            document.getElementById('dashboardOutput').classList.remove('updating');
+        }
+    };
+
+    const processData = debounce(fetchAnalytics, 300);
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', processData);
+    });
+
+    window.onload = fetchAnalytics;
+</script>
+</body>
+</html>
